@@ -1,37 +1,42 @@
-import React, { useState, useRef,  } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { checkValid } from "../utils/validate";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import NetflixLoader from "./NetflixLoader";
-
-
+import { useDispatch } from 'react-redux';
+import { addUser } from "../utils/userSlice";
 const Login = () => {
+  const dispatch=useDispatch();
   const [loader, setLoader] = useState(false);
   const [IsSignUp, setSignUp] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
- 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-
-  
+  const nameRef = useRef(null);
 
   const handleClick = async () => {
     const emailValue = emailRef.current.value;
     const passwordValue = passwordRef.current.value;
+    const name = IsSignUp ? nameRef.current?.value : null;
     const message = checkValid(emailValue, passwordValue);
     setErrorMessage(message);
-
 
     if (!message) {
       setLoader(true);
       try {
-        const userCredential = IsSignUp
-          ? await createUserWithEmailAndPassword(auth, emailValue, passwordValue)
-          : await signInWithEmailAndPassword(auth, emailValue, passwordValue);
-        
-        console.log(IsSignUp ? "User signed up successfully:" : "User signed in successfully:", userCredential.user);
+        if (IsSignUp) {
+          const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
+          await updateProfile(userCredential.user, {
+            displayName: name,
+            photoURL: "https://lh3.googleusercontent.com/ogw/AF2bZyhCmDBm9WlXZqVr4XMc7_wDmeOMpW5r5rRUN7pTZ_XEig=s32-c-mo"
+          });
+          const {uid,email,displayName,photoURL} = auth.currentUser;
+        dispatch(addUser({uid:uid,email:email,displayName:displayName,photoURL:photoURL}))
+        } else {
+          await signInWithEmailAndPassword(auth, emailValue, passwordValue);
+        }
         navigate("/Browse");
       } catch (error) {
         const errorCode = error.code;
@@ -40,7 +45,7 @@ const Login = () => {
       } finally {
         setTimeout(() => {
           setLoader(false);
-        }, 100);
+        }, 1000);
       }
     }
   };
@@ -55,12 +60,12 @@ const Login = () => {
         />
       </div>
       <div className="h-screen relative flex justify-center items-center">
-        <div className="absolute z-20"> {loader && <NetflixLoader />}</div>
+        <div className="absolute z-20">{loader && <NetflixLoader />}</div>
         <form onSubmit={(e) => e.preventDefault()} className="rounded-lg z-0 p-8 md:w-1/2 lg:w-3/12 w-3/4 bg-black bg-opacity-80 text-white flex flex-col justify-center items-center ">
           {IsSignUp ? <h1 className="font-bold text-3xl py-4 self-start">Sign Up</h1> : <h1 className="font-bold text-3xl py-4 self-start">Sign In</h1>}
-          {IsSignUp && <input type="text" placeholder="Full Name " ref={emailRef} className="p-4 rounded-sm my-6 w-full bg-gray-700" />}
-          <input type="text" placeholder="Email Address " ref={emailRef} className="p-4 rounded-sm mb-6 w-full bg-gray-700" />
-          <input type="password" placeholder="Password " ref={passwordRef} className="p-4 rounded-sm mb-6 w-full bg-gray-700" />
+          {IsSignUp && <input ref={nameRef} type="text" placeholder="Full Name " className="p-4 rounded-sm my-6 w-full bg-gray-700" />}
+          <input ref={emailRef} type="text" placeholder="Email Address " className="p-4 rounded-sm mb-6 w-full bg-gray-700" />
+          <input ref={passwordRef} type="password" placeholder="Password " className="p-4 rounded-sm mb-6 w-full bg-gray-700" />
           <p className="text-red-700 self-start text-md py-2 font-semibold">{errorMessage}</p>
           <button onClick={handleClick} className="p-4 my-4 w-full bg-red-700 rounded-sm">{IsSignUp ? "Sign Up" : "Sign In"}</button>
           <p className="self-start pb-6">{IsSignUp ? "Already Have An Account?" : "New to Netflix?"} <span onClick={() => setSignUp(!IsSignUp)} className="hover:text-gray-400 hover:underline cursor-pointer">{IsSignUp ? "Sign In Now" : "Sign Up"}</span></p>
