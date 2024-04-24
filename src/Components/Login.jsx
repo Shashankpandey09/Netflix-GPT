@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { ProfilePic } from "../utils/Constants";
 import { checkValid } from "../utils/validate";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import NetflixLoader from "./NetflixLoader";
+import BrowseHeader from './BrowseHeader';
 import { useDispatch } from 'react-redux';
 import { addUser } from "../utils/userSlice";
 const Login = () => {
@@ -11,7 +12,7 @@ const Login = () => {
   const [loader, setLoader] = useState(false);
   const [IsSignUp, setSignUp] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
+
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const nameRef = useRef(null);
@@ -30,14 +31,14 @@ const Login = () => {
           const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
           await updateProfile(userCredential.user, {
             displayName: name,
-            photoURL: "https://lh3.googleusercontent.com/ogw/AF2bZyhCmDBm9WlXZqVr4XMc7_wDmeOMpW5r5rRUN7pTZ_XEig=s32-c-mo"
+            photoURL: ProfilePic,
           });
           const {uid,email,displayName,photoURL} = auth.currentUser;
         dispatch(addUser({uid:uid,email:email,displayName:displayName,photoURL:photoURL}))
         } else {
           await signInWithEmailAndPassword(auth, emailValue, passwordValue);
         }
-        navigate("/Browse");
+    
       } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -52,6 +53,9 @@ const Login = () => {
 
   return (
     <div className="relative">
+      <div>
+        <BrowseHeader />
+      </div>
       <div className="absolute inset-0 overflow-hidden z-0">
         <img
           className="object-cover w-full h-full"
