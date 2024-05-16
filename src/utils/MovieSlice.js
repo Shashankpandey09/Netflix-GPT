@@ -4,17 +4,15 @@ import axios from 'axios';
 const initialState={
     data:[],
     loading:null,
-    message:''
+    message:" "
 }
 export const getMovieData=createAsyncThunk("fetch/MovieData",async()=>{
    
         try {
           const response = await axios.request(API_OPTIONS);
-          console.log(response.data);
           return response.data
         } catch (error) {
-          console.error(error);
-          return error.response;
+          return error
         }
     
 })

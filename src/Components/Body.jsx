@@ -1,9 +1,6 @@
-import { useEffect } from "react"
 import Browse from "./Browse"
 import Login from "./Login"
 import { BrowserRouter,Routes,Route,} from "react-router-dom"
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../utils/firebase"
 
 const Body = () => {
 
