@@ -1,12 +1,34 @@
 import React from 'react';
 
-const VideoTitle = ({ title }) => {
-  return (
-    <div className="pt-[10%] absolute  px-12 w-screen  aspect-video bg-gradient-to-r from-black">
-      <h1 className="text-4xl w-1/2 text-white font-semibold">{title}</h1>
+const VideoTitle = ({ title, description }) => {
+  // Function to split description into chunks of 10 words
+  const splitDescription = (desc) => {
+    if (!desc) return [];
+    const words = desc.split(' ');
+    const chunks = [];
+    for (let i = 0; i < words.length; i += 10) {
+      chunks.push(words.slice(i, i + 10).join(' '));
+    }
+    return chunks;
+  };
 
+  // Get the paragraphs from the split description
+  const paragraphs = splitDescription(description);
+
+
+  return (
+    <div className="pt-[12%] absolute pl-16 w-screen aspect-video bg-gradient-to-r from-black via-transparent to-transparent">
+      <h1 className="text-5xl w-1/2 text-white mb-4 font-bold">{title}</h1>
+      <span className="mt-4">
+        {/* Map over the paragraphs and render each one as a <p> element */}
+        {paragraphs.map((paragraph, index) => (
+          <p key={index} className="text-white text-lg font-semibold w-[50%] mb-4">
+            {paragraph}
+          </p>
+        ))}
+      </span>
       <div className="flex items-center space-x-4 mt-8">
-        <button className="px-8 py-3 rounded-sm text-xl bg-white hover:bg-opacity-80 text-black flex font-semibold items-center">
+        <button className="px-8 py-3 rounded-sm text-xl bg-white hover:bg-opacity-80 text-black flex font-semibold items-center transition duration-200 ease-in-out">
           <svg
             className="h-10 w-10"
             xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +39,7 @@ const VideoTitle = ({ title }) => {
           </svg>
           <span className="ml-2">Play</span>
         </button>
-        <button className="bg-gray-500 hover:bg-gray-700 flex items-center text-white text-lg font-semibold py-3 px-8 rounded-sm">
+        <button className="bg-gray-700 hover:bg-gray-900 flex items-center text-white text-lg font-semibold py-3 px-8 rounded-sm transition duration-200 ease-in-out">
           <i className="ri-information-line text-3xl mr-2"></i>
           <span>More Info</span>
         </button>

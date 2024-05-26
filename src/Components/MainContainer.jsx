@@ -10,9 +10,9 @@ const MainContainer = () => {
 
    const random=Math.floor(Math.random()*(movies&&movies.length))+1
   
-  const {title}=movies.length>0&&movies[random]
+  const {title,description}=movies.length>0&&movies[random]
   return (
-    <div className="w-[100vw]" ><VedioTitle title={title} />
+    <div className="w-[100vw]" ><VedioTitle title={title} description={description} />
     <VedioBg title={title} />
     </div>
   )
