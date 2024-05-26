@@ -18,7 +18,7 @@ useEffect(()=>{
     <div  className="w-[100vw] overflow-x-hidden whitespace-nowrap"  >
       <BrowseHeader  />
       <MainContainer/>
-      {/* <SecondarContainer/> */}
+      <SecondarContainer/>
     </div>
   )
 }

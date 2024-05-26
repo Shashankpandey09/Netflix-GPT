@@ -1,53 +1,53 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from 'react-router-dom';
-import { useDispatch,useSelector  } from 'react-redux';
-import {addUser, removeUser} from '../utils/userSlice';
-import { useEffect} from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { addUser, removeUser } from '../utils/userSlice';
+import { useEffect } from "react";
 import { LOGO } from "../utils/Constants";
-const BrowseHeader = () => {
-  const navigate = useNavigate(); 
 
-  const dispatch=useDispatch();
+const BrowseHeader = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const photoURL = useSelector((store) => store.user?.photoURL);
-  
-  useEffect(()=>{
-  const unsubscribe=onAuthStateChanged(auth, (user) => {
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const {uid,email,displayName,photoURL} = user;
-        dispatch(addUser({uid:uid,email:email,displayName:displayName,photoURL:photoURL}));
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(addUser({ uid, email, displayName, photoURL }));
         navigate("/Browse");
       } else {
-      dispatch(removeUser());
-
-      navigate('/');
+        dispatch(removeUser());
+        navigate('/');
       }
     });
-    //using clean up function so that each time our component unmounts this event listener is not running behind just like setTimeInterval 
-    return ()=>unsubscribe();
-  },[])
 
-  const handleClick = () => {
+    return () => unsubscribe();
+  }, [dispatch, navigate]);
 
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful. 
-      })
-      .catch((error) => {
-        alert(error);
-      });
+  const handleLogout = () => {
+    signOut(auth).catch((error) => {
+      alert(error.message);
+    });
   };
 
   return (
-    <div className="relative z-10">
-      <div className="absolute w-screen px-8 flex justify-between items-center py-2 bg-gradient-to-b from-black">
-        <img className="w-36 md:w-44 lg:w-46" src={LOGO} alt="Netflix-logo" />
-        <div className={`${auth.currentUser==null?"hidden":""}`}>
-          <img className="inline mr-2" src={photoURL?photoURL:" "} alt="profile pic" />
-          <span onClick={handleClick} className="hover:text-red-700 text-white cursor-pointer">Logout</span>
-        </div>
+    <header className="fixed top-0 left-0 w-full z-50 bg-gradient-to-b from-black via-transparent to-transparent py-4">
+      <div className="container mx-auto px-8 flex justify-between items-center">
+        <img className="w-28 md:w-36 lg:w-40" src={LOGO} alt="Netflix logo" />
+        {auth.currentUser && (
+          <div className="flex items-center space-x-4">
+            {photoURL && (
+              <img className="w-10 h-10 rounded-full border-2 border-white" src={photoURL} alt="Profile" />
+            )}
+            <span onClick={handleLogout} className="text-white cursor-pointer hover:text-red-600">
+              Logout
+            </span>
+          </div>
+        )}
       </div>
-    </div>
+    </header>
   );
 };
 
