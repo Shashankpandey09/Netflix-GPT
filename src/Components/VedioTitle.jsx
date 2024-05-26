@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const VideoTitle = ({ title, description }) => {
+  const [visible,setVisible]=useState(false)
+  useEffect(()=>{
+    setTimeout(()=>{
+      setVisible(true)
+    },15000)
+  },[visible])
   // Function to split description into chunks of 10 words
   const splitDescription = (desc) => {
     if (!desc) return [];
@@ -17,9 +23,9 @@ const VideoTitle = ({ title, description }) => {
 
 
   return (
-    <div className="pt-[12%] absolute pl-16 w-screen aspect-video bg-gradient-to-r from-black via-transparent to-transparent">
+    <div className="pt-[16%] absolute pl-16 w-screen aspect-video bg-gradient-to-r from-black via-transparent to-transparent">
       <h1 className="text-5xl w-1/2 text-white mb-4 font-bold">{title}</h1>
-      <span className="mt-4">
+      <span className={`transition-all duration-600 ease-in-out mt-4 ${visible&& 'hidden'}`}>
         {/* Map over the paragraphs and render each one as a <p> element */}
         {paragraphs.map((paragraph, index) => (
           <p key={index} className="text-white text-lg font-semibold w-[50%] mb-4">
