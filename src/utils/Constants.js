@@ -8,3 +8,11 @@ export const API_OPTIONS=  {
     'x-rapidapi-host': 'imdb-top-100-movies.p.rapidapi.com'
   }
 };
+
+export const Languages={
+  en:{
+    search:"Search",
+    placeHolder:"What would you like to watch?"
+  },
+  hindi
+}
