@@ -13,6 +13,5 @@ export const Languages={
   en:{
     search:"Search",
     placeHolder:"What would you like to watch?"
-  },
-  hindi
+  }
 }
