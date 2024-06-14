@@ -11,7 +11,7 @@ const GptSearchBar = () => {
           Search
         </button>
         <select className=" ml-2 col-span-2" >
-       {lang}
+       
         </select>
       </form>
     </div>

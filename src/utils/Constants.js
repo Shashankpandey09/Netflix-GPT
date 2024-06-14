@@ -9,9 +9,6 @@ export const API_OPTIONS=  {
   }
 };
 
-export const Languages={
-  en:{
-    search:"Search",
-    placeHolder:"What would you like to watch?"
-  }
-}
+export const Supported_Language=[
+  {id:"en",lang:"english"}, {id:"hindi",lang:"Hindi"}, {id:"french",lang:"french"}
+]
